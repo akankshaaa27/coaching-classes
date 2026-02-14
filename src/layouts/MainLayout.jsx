@@ -19,23 +19,26 @@ const Navbar = () => {
 
     const navLinks = [
         { name: 'Home', path: '/' },
-        { name: 'About', path: '/about' },
+        { name: 'Syllabus', path: '/syllabus' },
+        { name: 'Timetable', path: '/timetable' },
         { name: 'Courses', path: '/courses' },
         { name: 'Results', path: '/results' },
-        { name: 'Faculty', path: '/faculty' },
         { name: 'Admission', path: '/admission' },
         { name: 'Contact', path: '/contact' },
     ];
 
+    const isHomePage = location.pathname === '/';
+
     return (
-        <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white shadow-lg py-2' : 'bg-transparent py-4'}`}>
+        <nav className={`fixed w-full z-50 transition-all duration-300 ${(!isHomePage || scrolled) ? 'bg-white shadow-lg py-2 border-b border-slate-100' : 'bg-transparent py-4'
+            }`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center">
                     <Link to="/" className="flex items-center space-x-2">
                         <div className="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center text-white shadow-lg">
                             <GraduationCap size={24} />
                         </div>
-                        <span className={`text-xl font-bold tracking-tight ${scrolled ? 'text-slate-900' : 'text-white'}`}>
+                        <span className={`text-xl font-bold tracking-tight ${(!isHomePage || scrolled) ? 'text-slate-900' : 'text-white'}`}>
                             PIXEL PRO <span className="text-secondary-500">CLASSES</span>
                         </span>
                     </Link>
@@ -48,7 +51,7 @@ const Navbar = () => {
                                 to={link.path}
                                 className={`text-sm font-medium transition-colors hover:text-secondary-500 ${location.pathname === link.path
                                     ? 'text-secondary-500'
-                                    : (scrolled ? 'text-slate-600' : 'text-white/90')
+                                    : ((!isHomePage || scrolled) ? 'text-slate-600' : 'text-white/90')
                                     }`}
                             >
                                 {link.name}
@@ -140,10 +143,10 @@ const Footer = () => {
                         <h3 className="text-lg font-bold mb-6">Quick Links</h3>
                         <ul className="space-y-4 text-slate-400">
                             <li><Link to="/about" className="hover:text-white transition-colors">About Us</Link></li>
-                            <li><Link to="/courses" className="hover:text-white transition-colors">Our Courses</Link></li>
+                            <li><Link to="/syllabus" className="hover:text-white transition-colors">Syllabus</Link></li>
+                            <li><Link to="/timetable" className="hover:text-white transition-colors">Timetable</Link></li>
                             <li><Link to="/results" className="hover:text-white transition-colors">Results</Link></li>
                             <li><Link to="/admission" className="hover:text-white transition-colors">Admission</Link></li>
-                            <li><Link to="/study-material" className="hover:text-white transition-colors">Study Material</Link></li>
                         </ul>
                     </div>
 

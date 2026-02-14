@@ -2,15 +2,16 @@ import React, { useState } from 'react';
 import { useAppContext } from '../../../context/AppContext';
 import {
     Users, UserPlus, Search, Filter,
-    MoreVertical, Edit2, Trash2, Mail,
-    Shield, CheckCircle, XCircle
+    Edit2, Trash2, Mail, Shield, CheckCircle, X
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const AdminUsers = () => {
-    const { users, updateProfile } = useAppContext();
+    const { users, register, updateProfile } = useAppContext();
     const [searchTerm, setSearchTerm] = useState('');
     const [roleFilter, setRoleFilter] = useState('all');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [formData, setFormData] = useState({ name: '', email: '', role: 'student', password: 'password123' });
 
     const filteredUsers = users.filter(user => {
         const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -19,6 +20,13 @@ const AdminUsers = () => {
         return matchesSearch && matchesRole;
     });
 
+    const handleAddUser = (e) => {
+        e.preventDefault();
+        register({ ...formData });
+        setIsModalOpen(false);
+        setFormData({ name: '', email: '', role: 'student', password: 'password123' });
+    };
+
     return (
         <div className="space-y-8 animate-in fade-in duration-500">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -26,7 +34,10 @@ const AdminUsers = () => {
                     <h2 className="text-3xl font-extrabold text-slate-900">User Management</h2>
                     <p className="text-slate-500 font-medium">Manage students, teachers, and administrative access.</p>
                 </div>
-                <button className="btn-primary py-3 px-6 flex items-center justify-center space-x-2">
+                <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="btn-primary py-3 px-6 flex items-center justify-center space-x-2"
+                >
                     <UserPlus size={20} />
                     <span>Add New User</span>
                 </button>
@@ -75,7 +86,7 @@ const AdminUsers = () => {
                         </thead>
                         <tbody className="divide-y divide-slate-100">
                             <AnimatePresence>
-                                {filteredUsers.map((user, i) => (
+                                {filteredUsers.map((user) => (
                                     <motion.tr
                                         key={user.id}
                                         initial={{ opacity: 0 }}
@@ -99,7 +110,7 @@ const AdminUsers = () => {
                                         </td>
                                         <td className="px-6 py-5">
                                             <div className={`inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest ${user.role === 'admin' ? 'bg-purple-50 text-purple-600' :
-                                                    user.role === 'teacher' ? 'bg-blue-50 text-blue-600' : 'bg-orange-50 text-orange-600'
+                                                user.role === 'teacher' ? 'bg-blue-50 text-blue-600' : 'bg-orange-50 text-orange-600'
                                                 }`}>
                                                 <Shield size={12} />
                                                 <span>{user.role}</span>
@@ -134,6 +145,73 @@ const AdminUsers = () => {
                     </div>
                 )}
             </div>
+
+            {/* Add User Modal */}
+            <AnimatePresence>
+                {isModalOpen && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsModalOpen(false)}
+                            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+                        ></motion.div>
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            className="bg-white rounded-[40px] shadow-2xl w-full max-w-lg relative z-10 overflow-hidden"
+                        >
+                            <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                                <h3 className="text-2xl font-black text-slate-900">Add New User</h3>
+                                <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-white rounded-xl transition-colors">
+                                    <X size={20} className="text-slate-400" />
+                                </button>
+                            </div>
+                            <form onSubmit={handleAddUser} className="p-8 space-y-6">
+                                <div className="space-y-1">
+                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Full Name</label>
+                                    <input
+                                        type="text" required className="input-field py-4" placeholder="Enter name"
+                                        value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                    />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Email Address</label>
+                                    <input
+                                        type="email" required className="input-field py-4" placeholder="user@academy.com"
+                                        value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                    />
+                                </div>
+                                <div className="grid grid-cols-2 gap-6">
+                                    <div className="space-y-1">
+                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Assign Role</label>
+                                        <select
+                                            className="input-field py-4 appearance-none"
+                                            value={formData.role} onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                                        >
+                                            <option value="student">Student</option>
+                                            <option value="teacher">Teacher</option>
+                                            <option value="admin">Admin</option>
+                                        </select>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Password</label>
+                                        <input
+                                            type="text" required className="input-field py-4" placeholder="••••••••"
+                                            value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="pt-4">
+                                    <button type="submit" className="btn-primary w-full py-5 text-sm font-black uppercase tracking-widest shadow-lg">Create Account</button>
+                                </div>
+                            </form>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };

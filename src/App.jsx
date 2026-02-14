@@ -16,6 +16,8 @@ import Gallery from './pages/Gallery';
 import StudyMaterial from './pages/StudyMaterial';
 import Admission from './pages/Admission';
 import Contact from './pages/Contact';
+import Syllabus from './pages/Syllabus';
+import Timetable from './pages/Timetable';
 import Login from './pages/Login';
 
 // Dashboard Pages
@@ -65,6 +67,8 @@ function App() {
             <Route path="/study-material" element={<MainLayout><StudyMaterial /></MainLayout>} />
             <Route path="/admission" element={<MainLayout><Admission /></MainLayout>} />
             <Route path="/contact" element={<MainLayout><Contact /></MainLayout>} />
+            <Route path="/syllabus" element={<MainLayout><Syllabus /></MainLayout>} />
+            <Route path="/timetable" element={<MainLayout><Timetable /></MainLayout>} />
             <Route path="/login" element={<Login />} />
 
             {/* Dashboard Routes */}
