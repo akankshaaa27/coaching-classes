@@ -1,0 +1,28 @@
+[
+    {
+        "id": "1",
+        "name": "Admin User",
+        "email": "admin@example.com",
+        "password": "admin",
+        "role": "admin",
+        "enrolledCourses": []
+    },
+    {
+        "id": "2",
+        "name": "Teacher User",
+        "email": "teacher@example.com",
+        "password": "teacher",
+        "role": "teacher",
+        "enrolledCourses": []
+    },
+    {
+        "id": "3",
+        "name": "Student User",
+        "email": "student@example.com",
+        "password": "student",
+        "role": "student",
+        "enrolledCourses": [
+            "101"
+        ]
+    }
+]

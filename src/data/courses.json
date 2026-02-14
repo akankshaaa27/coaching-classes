@@ -1,0 +1,23 @@
+[
+    {
+        "id": "101",
+        "title": "NEET Crash Course",
+        "description": "Intensive preparation for NEET with top faculty and daily mock tests.",
+        "duration": "3 Months",
+        "fees": "15000"
+    },
+    {
+        "id": "102",
+        "title": "JEE Main & Advanced",
+        "description": "Comprehensive coaching for Engineering entrance exams.",
+        "duration": "1 Year",
+        "fees": "45000"
+    },
+    {
+        "id": "103",
+        "title": "Foundation Course (Class 10)",
+        "description": "Strong foundation building for future competitive exams.",
+        "duration": "1 Year",
+        "fees": "25000"
+    }
+]

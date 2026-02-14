@@ -1,0 +1,21 @@
+[
+    {
+        "id": "t1",
+        "courseId": "101",
+        "title": "Weekly Assessment - Bio",
+        "duration": 30,
+        "questions": [
+            {
+                "id": "q1",
+                "question": "Which organelle is known as the powerhouse of the cell?",
+                "options": [
+                    "Nucleus",
+                    "Mitochondria",
+                    "Ribosome",
+                    "Golgi Body"
+                ],
+                "correctAnswer": "Mitochondria"
+            }
+        ]
+    }
+]
