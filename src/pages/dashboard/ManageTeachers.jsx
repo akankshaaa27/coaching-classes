@@ -256,86 +256,88 @@ const ManageTeachers = () => {
                             initial={{ opacity: 0, scale: 0.9, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                            className="relative bg-white rounded-[4rem] w-full max-w-2xl shadow-2xl overflow-hidden"
+                            className="relative bg-white rounded-[2.5rem] md:rounded-[4rem] w-full max-w-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden"
                         >
-                            <div className="p-12 border-b border-slate-50 flex items-center justify-between bg-slate-50/30">
+                            <div className="p-6 md:p-10 border-b border-slate-50 flex items-center justify-between bg-slate-50/30 shrink-0">
                                 <div>
-                                    <h3 className="text-3xl font-black text-slate-900">{editingTeacher ? 'Update Faculty' : 'Hire New Faculty'}</h3>
-                                    <p className="text-slate-500 font-medium">Define expertise and assign academic responsibilities.</p>
+                                    <h3 className="text-xl md:text-3xl font-black text-slate-900">{editingTeacher ? 'Update Faculty' : 'Hire New Faculty'}</h3>
+                                    <p className="text-slate-500 font-medium text-xs md:text-sm">Define expertise and assign academic responsibilities.</p>
                                 </div>
-                                <button onClick={closeModal} className="p-4 hover:bg-white rounded-3xl transition-colors shadow-sm">
-                                    <X size={28} className="text-slate-400" />
+                                <button onClick={closeModal} className="p-2 md:p-4 hover:bg-white rounded-2xl transition-colors shadow-sm shrink-0">
+                                    <X size={24} className="text-slate-400" />
                                 </button>
                             </div>
 
-                            <form onSubmit={handleSubmit} className="p-12 space-y-10">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Full Name</label>
-                                        <input
-                                            type="text" required className="input-field py-5" placeholder="Faculty name"
-                                            value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                        />
-                                    </div>
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Email Address</label>
-                                        <input
-                                            type="email" required className="input-field py-5" placeholder="faculty@academy.com"
-                                            value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                        />
-                                    </div>
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Contact Number</label>
-                                        <input
-                                            type="tel" required className="input-field py-5" placeholder="+91 00000 00000"
-                                            value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                        />
-                                    </div>
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Portal Password</label>
-                                        <input
-                                            type="text" required className="input-field py-5"
-                                            value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="space-y-8 pt-8 border-t border-slate-50">
-                                    <div className="space-y-3">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Primary Programs</label>
-                                        <Select
-                                            isMulti
-                                            options={courseOptions}
-                                            styles={customSelectStyles}
-                                            value={courseOptions.filter(o => formData.enrolledCourses.includes(o.value))}
-                                            onChange={handleCourseChange}
-                                            placeholder="Assign courses..."
-                                        />
+                            <div className="flex-grow overflow-y-auto custom-scrollbar p-6 md:p-10">
+                                <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Full Name</label>
+                                            <input
+                                                type="text" required className="input-field py-4 md:py-5" placeholder="Faculty name"
+                                                value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Email Address</label>
+                                            <input
+                                                type="email" required className="input-field py-4 md:py-5" placeholder="faculty@academy.com"
+                                                value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Contact Number</label>
+                                            <input
+                                                type="tel" required className="input-field py-4 md:py-5" placeholder="+91 00000 00000"
+                                                value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Portal Password</label>
+                                            <input
+                                                type="text" required className="input-field py-4 md:py-5"
+                                                value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                            />
+                                        </div>
                                     </div>
 
-                                    <div className="space-y-3">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Subject Expertise</label>
-                                        <Select
-                                            isMulti
-                                            options={subjectOptions}
-                                            styles={customSelectStyles}
-                                            value={subjectOptions.filter(o => formData.enrolledSubjects.includes(o.value))}
-                                            onChange={handleSubjectChange}
-                                            placeholder="Assign subjects for selected courses..."
-                                            noOptionsMessage={() => (formData.enrolledCourses.length > 0 ? "No subjects found for selected courses" : "Select at least one course first")}
-                                        />
-                                    </div>
-                                </div>
+                                    <div className="space-y-6 md:space-y-8 pt-6 md:pt-8 border-t border-slate-50">
+                                        <div className="space-y-2 md:space-y-3">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Primary Programs</label>
+                                            <Select
+                                                isMulti
+                                                options={courseOptions}
+                                                styles={customSelectStyles}
+                                                value={courseOptions.filter(o => formData.enrolledCourses.includes(o.value))}
+                                                onChange={handleCourseChange}
+                                                placeholder="Assign courses..."
+                                            />
+                                        </div>
 
-                                <div className="pt-6 flex gap-6">
-                                    <button type="button" onClick={closeModal} className="flex-1 py-5 text-sm font-black uppercase tracking-widest text-slate-400 border-2 border-slate-100 rounded-3xl hover:bg-slate-50 transition-all">
-                                        Discard
-                                    </button>
-                                    <button type="submit" className="flex-1 btn-primary py-5 text-sm font-black uppercase tracking-widest shadow-2xl shadow-primary-200">
-                                        {editingTeacher ? 'Save Faculty Records' : 'Complete Hiring'}
-                                    </button>
-                                </div>
-                            </form>
+                                        <div className="space-y-2 md:space-y-3">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Subject Expertise</label>
+                                            <Select
+                                                isMulti
+                                                options={subjectOptions}
+                                                styles={customSelectStyles}
+                                                value={subjectOptions.filter(o => formData.enrolledSubjects.includes(o.value))}
+                                                onChange={handleSubjectChange}
+                                                placeholder="Assign subjects for selected courses..."
+                                                noOptionsMessage={() => (formData.enrolledCourses.length > 0 ? "No subjects found for selected courses" : "Select at least one course first")}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="pt-4 md:pt-6 flex flex-col md:flex-row gap-4 md:gap-6">
+                                        <button type="button" onClick={closeModal} className="flex-1 py-4 md:py-5 text-xs md:text-sm font-black uppercase tracking-widest text-slate-400 border-2 border-slate-100 rounded-2xl md:rounded-3xl hover:bg-slate-50 transition-all">
+                                            Discard
+                                        </button>
+                                        <button type="submit" className="flex-1 btn-primary py-4 md:py-5 text-xs md:text-sm font-black uppercase tracking-widest shadow-2xl shadow-primary-200">
+                                            {editingTeacher ? 'Save Faculty Records' : 'Complete Hiring'}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </motion.div>
                     </div>
                 )}

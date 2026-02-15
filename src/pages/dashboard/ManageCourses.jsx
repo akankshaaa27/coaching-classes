@@ -133,74 +133,80 @@ const ManageCourses = () => {
                             initial={{ opacity: 0, scale: 0.9, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                            className="relative bg-white rounded-[50px] p-12 max-w-lg w-full shadow-2xl overflow-hidden"
+                            className="relative bg-white rounded-[2.5rem] md:rounded-[50px] w-full max-w-xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden"
                         >
-                            <div className="absolute top-0 left-0 w-full h-2 bg-primary-600"></div>
-                            <h3 className="text-3xl font-black text-slate-900 mb-8">Launch New Program</h3>
+                            <div className="p-6 md:p-10 border-b border-slate-50 flex items-center justify-between shrink-0">
+                                <h3 className="text-xl md:text-2xl font-black text-slate-900">Launch New Program</h3>
+                                <button onClick={() => setShowAddModal(false)} className="p-2 md:p-3 hover:bg-slate-50 rounded-2xl transition-colors shrink-0">
+                                    <X size={24} className="text-slate-400" />
+                                </button>
+                            </div>
 
-                            <form onSubmit={handleSubmit} className="space-y-8">
-                                <div className="space-y-2">
-                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Program Title</label>
-                                    <input
-                                        type="text" required className="input-field py-4" placeholder="e.g. JEE Masterclass 2025"
-                                        value={formData.title}
-                                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Description</label>
-                                    <textarea
-                                        required className="input-field py-4 min-h-[120px]" placeholder="Brief course overview..."
-                                        value={formData.description}
-                                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                    ></textarea>
-                                </div>
-                                <div className="grid grid-cols-2 gap-8">
+                            <div className="flex-grow overflow-y-auto custom-scrollbar p-6 md:p-10">
+                                <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Duration</label>
+                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Program Title</label>
                                         <input
-                                            type="text" required className="input-field py-4" placeholder="6 Months"
-                                            value={formData.duration}
-                                            onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+                                            type="text" required className="input-field py-4" placeholder="e.g. JEE Masterclass 2025"
+                                            value={formData.title}
+                                            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Fees (₹)</label>
-                                        <input
-                                            type="number" required className="input-field py-4" placeholder="25000"
-                                            value={formData.fees}
-                                            onChange={(e) => setFormData({ ...formData, fees: e.target.value })}
-                                        />
+                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Description</label>
+                                        <textarea
+                                            required className="input-field py-4 min-h-[120px]" placeholder="Brief course overview..."
+                                            value={formData.description}
+                                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                        ></textarea>
                                     </div>
-                                </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Duration</label>
+                                            <input
+                                                type="text" required className="input-field py-4" placeholder="6 Months"
+                                                value={formData.duration}
+                                                onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Fees (₹)</label>
+                                            <input
+                                                type="number" required className="input-field py-4" placeholder="25000"
+                                                value={formData.fees}
+                                                onChange={(e) => setFormData({ ...formData, fees: e.target.value })}
+                                            />
+                                        </div>
+                                    </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Type</label>
-                                    <select
-                                        className="input-field py-4"
-                                        value={formData.type}
-                                        onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                                    >
-                                        <option value="Regular">Regular</option>
-                                        <option value="Crash">Crash</option>
-                                    </select>
-                                </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Type</label>
+                                        <select
+                                            className="input-field py-4 font-bold"
+                                            value={formData.type}
+                                            onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                                        >
+                                            <option value="Regular">Regular</option>
+                                            <option value="Crash">Crash</option>
+                                        </select>
+                                    </div>
 
-                                <div className="flex gap-4 pt-4">
-                                    <button
-                                        type="button" onClick={() => setShowAddModal(false)}
-                                        className="flex-1 py-4 px-6 rounded-2xl border-2 border-slate-100 font-black uppercase tracking-widest text-xs text-slate-400"
-                                    >
-                                        Discard
-                                    </button>
-                                    <button
-                                        type="submit"
-                                        className="flex-1 py-4 px-6 rounded-2xl bg-slate-900 text-white font-black uppercase tracking-widest text-xs hover:bg-primary-600 transition-all shadow-xl shadow-slate-100"
-                                    >
-                                        Launch Program
-                                    </button>
-                                </div>
-                            </form>
+                                    <div className="flex flex-col md:flex-row gap-4 pt-4">
+                                        <button
+                                            type="button" onClick={() => setShowAddModal(false)}
+                                            className="flex-1 py-4 px-6 rounded-2xl border-2 border-slate-100 font-black uppercase tracking-widest text-[10px] md:text-xs text-slate-400"
+                                        >
+                                            Discard
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            className="flex-1 py-4 px-6 rounded-2xl bg-slate-900 text-white font-black uppercase tracking-widest text-[10px] md:text-xs hover:bg-primary-600 transition-all shadow-xl shadow-slate-100"
+                                        >
+                                            Launch Program
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </motion.div>
                     </div>
                 )}

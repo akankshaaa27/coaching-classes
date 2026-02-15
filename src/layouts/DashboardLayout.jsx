@@ -78,13 +78,13 @@ const DashboardLayout = () => {
     const links = getLinks();
 
     return (
-        <div className="min-h-screen bg-slate-50 flex">
+        <div className="h-screen bg-slate-50 flex overflow-hidden">
             {/* Desktop Sidebar */}
             <aside
                 className={`hidden lg:flex flex-col bg-white border-r border-slate-200 transition-all duration-300 ${collapsed ? 'w-20' : 'w-64'
                     }`}
             >
-                <div className="p-6 flex items-center justify-between">
+                <div className="p-6 flex items-center justify-between border-b border-slate-50 shrink-0">
                     {!collapsed && (
                         <Link to="/" className="flex items-center space-x-2">
                             <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center text-white">
@@ -101,13 +101,13 @@ const DashboardLayout = () => {
                     </button>
                 </div>
 
-                <nav className="flex-grow px-3 space-y-2 mt-4">
+                <nav className="flex-grow px-3 space-y-2 mt-4 overflow-y-auto custom-scrollbar">
                     {links.map((link) => (
                         <SidebarLink key={link.to} {...link} collapsed={collapsed} />
                     ))}
                 </nav>
 
-                <div className="p-4 border-t border-slate-100">
+                <div className="p-4 border-t border-slate-100 shrink-0">
                     <button
                         onClick={handleLogout}
                         className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-colors"
@@ -142,7 +142,7 @@ const DashboardLayout = () => {
                         <X size={24} />
                     </button>
                 </div>
-                <nav className="p-4 space-y-2">
+                <nav className="p-4 space-y-2 overflow-y-auto h-[calc(100%-160px)]">
                     {links.map((link) => (
                         <SidebarLink
                             key={link.to}
@@ -152,7 +152,7 @@ const DashboardLayout = () => {
                         />
                     ))}
                 </nav>
-                <div className="absolute bottom-0 w-full p-4 border-t border-slate-100">
+                <div className="absolute bottom-0 w-full p-4 border-t border-slate-100 bg-white">
                     <button
                         onClick={handleLogout}
                         className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50"
@@ -164,8 +164,8 @@ const DashboardLayout = () => {
             </aside>
 
             {/* Main Content */}
-            <div className="flex-grow flex flex-col min-w-0">
-                <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-4 lg:px-8">
+            <div className="flex-grow flex flex-col min-w-0 h-full overflow-hidden">
+                <header className="h-20 shrink-0 bg-white border-b border-slate-200 flex items-center justify-between px-4 lg:px-8">
                     <button
                         onClick={() => setMobileOpen(true)}
                         className="p-2 -ml-2 text-slate-600 lg:hidden"

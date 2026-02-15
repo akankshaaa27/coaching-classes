@@ -175,7 +175,8 @@ const ManageStudents = () => {
                 </div>
             </div>
 
-            <div className="bg-white rounded-[50px] border border-slate-100 shadow-sm overflow-hidden">
+            {/* Desktop View Table */}
+            <div className="hidden xl:block bg-white rounded-[50px] border border-slate-100 shadow-sm overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
@@ -198,7 +199,7 @@ const ManageStudents = () => {
                                                 </div>
                                                 <div>
                                                     <p className="font-bold text-slate-900 text-lg leading-tight">{student.name}</p>
-                                                    <div className="flex items-center text-slate-500 text-sm mt-1 space-x-3">
+                                                    <div className="flex flex-col lg:flex-row lg:items-center text-slate-500 text-sm mt-1 lg:space-x-4">
                                                         <span className="flex items-center"><Mail size={14} className="mr-1.5" /> {student.email}</span>
                                                         <span className="flex items-center"><Phone size={14} className="mr-1.5" /> {student.phone || 'N/A'}</span>
                                                     </div>
@@ -245,15 +246,76 @@ const ManageStudents = () => {
                         </tbody>
                     </table>
                 </div>
-                {filteredStudents.length === 0 && (
-                    <div className="p-20 text-center">
-                        <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <Users size={40} className="text-slate-200" />
-                        </div>
-                        <p className="text-slate-500 font-bold text-xl">No students found</p>
-                    </div>
-                )}
             </div>
+
+            {/* Mobile/Tablet Card View */}
+            <div className="xl:hidden grid grid-cols-1 md:grid-cols-2 gap-6">
+                {filteredStudents.map((student) => {
+                    const course = courses.find(c => c.id === student.courseId);
+                    return (
+                        <motion.div
+                            key={student.id}
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm"
+                        >
+                            <div className="flex items-center space-x-4 mb-6">
+                                <div className="w-14 h-14 bg-primary-100 rounded-2xl flex items-center justify-center text-primary-700 font-black text-xl">
+                                    {student.name.charAt(0)}
+                                </div>
+                                <div className="flex-grow">
+                                    <h4 className="font-bold text-slate-900 leading-tight">{student.name}</h4>
+                                    <p className="text-xs text-slate-500 font-medium">{student.email}</p>
+                                </div>
+                                <div className="flex gap-2">
+                                    <button onClick={() => openEdit(student)} className="p-2.5 bg-slate-50 text-slate-400 rounded-xl">
+                                        <Edit2 size={16} />
+                                    </button>
+                                    <button onClick={() => deleteUser(student.id)} className="p-2.5 bg-red-50 text-red-400 rounded-xl">
+                                        <Trash2 size={16} />
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="space-y-4 pt-6 border-t border-slate-50">
+                                <div className="flex justify-between items-start">
+                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Program</span>
+                                    <div className="flex items-center space-x-2 text-slate-700 font-bold text-sm">
+                                        <BookOpen size={14} className="text-secondary-500" />
+                                        <span>{course?.title || 'No Course'}</span>
+                                    </div>
+                                </div>
+                                <div className="flex justify-between items-start">
+                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Enrolled on</span>
+                                    <div className="flex items-center space-x-2 text-slate-600 font-bold text-sm">
+                                        <Calendar size={14} className="text-primary-500" />
+                                        <span>{student.admissionDate || 'N/A'}</span>
+                                    </div>
+                                </div>
+                                <div className="flex flex-wrap gap-1.5 pt-2">
+                                    {(student.enrolledSubjects || []).map(subId => {
+                                        const sub = subjects.find(s => s.id === subId);
+                                        return (
+                                            <span key={subId} className="px-2 py-1 bg-slate-50 text-slate-500 rounded-lg text-[9px] font-black uppercase tracking-wider border border-slate-100">
+                                                {sub?.name || 'Subject'}
+                                            </span>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        </motion.div>
+                    );
+                })}
+            </div>
+
+            {filteredStudents.length === 0 && (
+                <div className="p-20 text-center bg-white rounded-[50px] border border-slate-100">
+                    <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <Users size={40} className="text-slate-200" />
+                    </div>
+                    <p className="text-slate-500 font-bold text-xl">No students found</p>
+                </div>
+            )}
 
             {/* Modal */}
             <AnimatePresence>
@@ -270,87 +332,89 @@ const ManageStudents = () => {
                             initial={{ opacity: 0, scale: 0.9, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                            className="relative bg-white rounded-[50px] w-full max-w-2xl shadow-2xl overflow-hidden"
+                            className="relative bg-white rounded-[2.5rem] md:rounded-[50px] w-full max-w-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden"
                         >
-                            <div className="p-10 border-b border-slate-50 flex items-center justify-between">
+                            <div className="p-6 md:p-10 border-b border-slate-50 flex items-center justify-between shrink-0">
                                 <div>
-                                    <h3 className="text-3xl font-black text-slate-900">{editingStudent ? 'Update Profile' : 'Student Enrollment'}</h3>
-                                    <p className="text-slate-500 font-medium">Please fill in all mandatory information.</p>
+                                    <h3 className="text-xl md:text-3xl font-black text-slate-900">{editingStudent ? 'Update Profile' : 'Student Enrollment'}</h3>
+                                    <p className="text-slate-500 font-medium text-xs md:text-sm">Please fill in all mandatory information.</p>
                                 </div>
-                                <button onClick={closeModal} className="p-3 hover:bg-slate-50 rounded-2xl transition-colors">
+                                <button onClick={closeModal} className="p-2 md:p-3 hover:bg-slate-50 rounded-2xl transition-colors shrink-0">
                                     <X size={24} className="text-slate-400" />
                                 </button>
                             </div>
 
-                            <form onSubmit={handleSubmit} className="p-10 space-y-8">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Full Name</label>
-                                        <input
-                                            type="text" required className="input-field py-4" placeholder="Full name"
-                                            value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                        />
-                                    </div>
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Email Address</label>
-                                        <input
-                                            type="email" required className="input-field py-4" placeholder="email@academy.com"
-                                            value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                        />
-                                    </div>
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Mobile Number</label>
-                                        <input
-                                            type="tel" required className="input-field py-4" placeholder="+91 00000 00000"
-                                            value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                        />
-                                    </div>
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Admission Date</label>
-                                        <input
-                                            type="date" required className="input-field py-4"
-                                            value={formData.admissionDate} onChange={(e) => setFormData({ ...formData, admissionDate: e.target.value })}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="space-y-8 pt-4 border-t border-slate-50">
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Enrolled Course</label>
-                                        <select
-                                            className="input-field py-4 appearance-none font-bold"
-                                            value={formData.courseId} onChange={handleCourseChange} required
-                                        >
-                                            <option value="" disabled>Select course program...</option>
-                                            {courses.map(c => (
-                                                <option key={c.id} value={c.id}>{c.title}</option>
-                                            ))}
-                                        </select>
+                            <div className="flex-grow overflow-y-auto custom-scrollbar p-6 md:p-10">
+                                <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Full Name</label>
+                                            <input
+                                                type="text" required className="input-field py-4" placeholder="Full name"
+                                                value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Email Address</label>
+                                            <input
+                                                type="email" required className="input-field py-4" placeholder="email@academy.com"
+                                                value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Mobile Number</label>
+                                            <input
+                                                type="tel" required className="input-field py-4" placeholder="+91 00000 00000"
+                                                value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Admission Date</label>
+                                            <input
+                                                type="date" required className="input-field py-4"
+                                                value={formData.admissionDate} onChange={(e) => setFormData({ ...formData, admissionDate: e.target.value })}
+                                            />
+                                        </div>
                                     </div>
 
-                                    <div className="space-y-3">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Subject Assignments</label>
-                                        <Select
-                                            isMulti
-                                            options={subjectOptions}
-                                            styles={customSelectStyles}
-                                            value={subjectOptions.filter(o => formData.enrolledSubjects.includes(o.value))}
-                                            onChange={handleSubjectChange}
-                                            placeholder="Choose subjects for this student..."
-                                            noOptionsMessage={() => (formData.courseId ? "No subjects found for this course" : "Select a course first")}
-                                        />
-                                    </div>
-                                </div>
+                                    <div className="space-y-6 md:space-y-8 pt-4 md:pt-8 border-t border-slate-50">
+                                        <div className="space-y-1">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Enrolled Course</label>
+                                            <select
+                                                className="input-field py-4 appearance-none font-bold"
+                                                value={formData.courseId} onChange={handleCourseChange} required
+                                            >
+                                                <option value="" disabled>Select course program...</option>
+                                                {courses.map(c => (
+                                                    <option key={c.id} value={c.id}>{c.title}</option>
+                                                ))}
+                                            </select>
+                                        </div>
 
-                                <div className="pt-6 flex gap-4">
-                                    <button type="button" onClick={closeModal} className="flex-1 py-5 text-sm font-black uppercase tracking-widest text-slate-400 border-2 border-slate-100 rounded-[20px]">
-                                        Cancel
-                                    </button>
-                                    <button type="submit" className="flex-1 btn-primary py-5 text-sm font-black uppercase tracking-widest shadow-xl shadow-primary-100">
-                                        {editingStudent ? 'Save Records' : 'Confirm Enrollment'}
-                                    </button>
-                                </div>
-                            </form>
+                                        <div className="space-y-2 md:space-y-3">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Subject Assignments</label>
+                                            <Select
+                                                isMulti
+                                                options={subjectOptions}
+                                                styles={customSelectStyles}
+                                                value={subjectOptions.filter(o => formData.enrolledSubjects.includes(o.value))}
+                                                onChange={handleSubjectChange}
+                                                placeholder="Choose subjects for this student..."
+                                                noOptionsMessage={() => (formData.courseId ? "No subjects found for this course" : "Select a course first")}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="pt-4 md:pt-6 flex flex-col md:flex-row gap-4">
+                                        <button type="button" onClick={closeModal} className="flex-1 py-4 md:py-5 text-xs md:text-sm font-black uppercase tracking-widest text-slate-400 border-2 border-slate-100 rounded-[20px]">
+                                            Cancel
+                                        </button>
+                                        <button type="submit" className="flex-1 btn-primary py-4 md:py-5 text-xs md:text-sm font-black uppercase tracking-widest shadow-xl shadow-primary-100">
+                                            {editingStudent ? 'Save Records' : 'Confirm Enrollment'}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </motion.div>
                     </div>
                 )}

@@ -93,37 +93,42 @@ const AcademyDirectory = () => {
             </div>
 
             {viewType === 'course-students' ? (
-                <div className="space-y-8">
+                <div className="space-y-12">
                     {courses.filter(c => selectedCourse === 'all' || c.id === selectedCourse).map(course => {
                         const courseStudents = filteredStudents.filter(s => s.courseId === course.id);
                         if (courseStudents.length === 0 && selectedCourse !== 'all') return null;
                         return (
-                            <section key={course.id} className="space-y-4">
-                                <div className="flex items-center space-x-4 px-4">
-                                    <div className="w-10 h-10 bg-primary-100 rounded-xl flex items-center justify-center text-primary-600">
+                            <section key={course.id} className="space-y-6">
+                                <div className="flex items-center space-x-4 px-2">
+                                    <div className="w-10 h-10 bg-primary-100 rounded-xl flex items-center justify-center text-primary-600 shrink-0">
                                         <BookOpen size={20} />
                                     </div>
-                                    <h3 className="text-2xl font-black text-slate-900">{course.title} <span className="text-slate-300 font-medium ml-2">({courseStudents.length} Students)</span></h3>
+                                    <h3 className="text-xl md:text-2xl font-black text-slate-900 leading-tight">
+                                        {course.title}
+                                        <span className="text-slate-300 font-medium ml-2 block md:inline text-sm md:text-xl">({courseStudents.length} Students)</span>
+                                    </h3>
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                                     {courseStudents.map(student => (
                                         <motion.div
                                             key={student.id}
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex items-center space-x-4"
+                                            initial={{ opacity: 0, scale: 0.95 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            className="bg-white p-5 md:p-6 rounded-[2rem] border border-slate-100 shadow-sm flex items-center space-x-4 hover:border-primary-200 hover:shadow-md transition-all"
                                         >
-                                            <div className="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 font-bold border border-slate-100">
+                                            <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 font-black border border-slate-100 shrink-0">
                                                 {student.name.charAt(0)}
                                             </div>
-                                            <div>
-                                                <p className="font-bold text-slate-900">{student.name}</p>
-                                                <p className="text-xs text-slate-500 font-medium">{student.email}</p>
+                                            <div className="min-w-0">
+                                                <p className="font-bold text-slate-900 truncate">{student.name}</p>
+                                                <p className="text-[10px] md:text-xs text-slate-500 font-medium truncate">{student.email}</p>
                                             </div>
                                         </motion.div>
                                     ))}
                                     {courseStudents.length === 0 && (
-                                        <div className="col-span-full py-12 text-center text-slate-400 italic">No students enrolled in this program yet.</div>
+                                        <div className="col-span-full py-12 text-center text-slate-400 font-medium italic bg-slate-50/50 rounded-3xl border border-dashed border-slate-200">
+                                            No students enrolled in this program yet.
+                                        </div>
                                     )}
                                 </div>
                             </section>
@@ -131,45 +136,47 @@ const AcademyDirectory = () => {
                     })}
                 </div>
             ) : (
-                <div className="space-y-8">
+                <div className="space-y-12">
                     {subjects.filter(s => (selectedCourse === 'all' || s.courseId === selectedCourse) && (selectedSubject === 'all' || s.id === selectedSubject)).map(subject => {
                         const subjectTeachers = filteredTeachers.filter(t => (t.enrolledSubjects || []).includes(subject.id));
                         const course = courses.find(c => c.id === subject.courseId);
                         return (
-                            <section key={subject.id} className="space-y-4">
-                                <div className="flex items-center space-x-4 px-4">
-                                    <div className="w-10 h-10 bg-secondary-100 rounded-xl flex items-center justify-center text-secondary-600">
+                            <section key={subject.id} className="space-y-6">
+                                <div className="flex items-center space-x-4 px-2">
+                                    <div className="w-10 h-10 bg-secondary-100 rounded-xl flex items-center justify-center text-secondary-600 shrink-0">
                                         <Layers size={20} />
                                     </div>
                                     <div>
-                                        <h3 className="text-2xl font-black text-slate-900">{subject.name}</h3>
-                                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{course?.title}</p>
+                                        <h3 className="text-xl md:text-2xl font-black text-slate-900 leading-tight">{subject.name}</h3>
+                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{course?.title}</p>
                                     </div>
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {subjectTeachers.map(teacher => (
                                         <motion.div
                                             key={teacher.id}
                                             initial={{ opacity: 0, y: 10 }}
                                             animate={{ opacity: 1, y: 0 }}
-                                            className="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm group hover:border-primary-200 transition-colors"
+                                            className="bg-white p-6 md:p-8 rounded-[2.5rem] md:rounded-[3rem] border border-slate-100 shadow-sm group hover:border-primary-200 hover:shadow-xl transition-all"
                                         >
                                             <div className="flex items-center space-x-4 mb-4">
-                                                <div className="w-16 h-16 bg-secondary-50 rounded-2xl flex items-center justify-center text-secondary-600 font-black text-2xl group-hover:scale-110 transition-transform">
+                                                <div className="w-14 h-14 md:w-16 md:h-16 bg-secondary-50 rounded-2xl flex items-center justify-center text-secondary-600 font-black text-2xl group-hover:scale-110 transition-transform shrink-0">
                                                     {teacher.name.charAt(0)}
                                                 </div>
-                                                <div>
-                                                    <p className="font-black text-slate-900 text-lg uppercase tracking-tight">{teacher.name}</p>
-                                                    <div className="flex flex-col space-y-1 mt-1 text-slate-500 text-xs font-bold">
-                                                        <span className="flex items-center"><Mail size={12} className="mr-1" /> {teacher.email}</span>
-                                                        <span className="flex items-center"><Phone size={12} className="mr-1 text-primary-500" /> {teacher.phone}</span>
+                                                <div className="min-w-0">
+                                                    <p className="font-black text-slate-900 text-base md:text-lg uppercase tracking-tight truncate">{teacher.name}</p>
+                                                    <div className="flex flex-col space-y-1 mt-1 text-slate-500 text-[10px] md:text-xs font-bold">
+                                                        <span className="flex items-center truncate"><Mail size={12} className="mr-1 shrink-0" /> {teacher.email}</span>
+                                                        <span className="flex items-center truncate"><Phone size={12} className="mr-1 text-primary-500 shrink-0" /> {teacher.phone}</span>
                                                     </div>
                                                 </div>
                                             </div>
                                         </motion.div>
                                     ))}
                                     {subjectTeachers.length === 0 && (
-                                        <div className="col-span-full py-12 text-center text-slate-400 italic">No faculty assigned to this subject.</div>
+                                        <div className="col-span-full py-12 text-center text-slate-400 font-medium italic bg-slate-50/50 rounded-3xl border border-dashed border-slate-200">
+                                            No faculty assigned to this subject.
+                                        </div>
                                     )}
                                 </div>
                             </section>

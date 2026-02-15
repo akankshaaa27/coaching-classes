@@ -147,49 +147,57 @@ const ManageSubjects = () => {
                             initial={{ opacity: 0, scale: 0.9, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                            className="relative bg-white rounded-[40px] p-10 max-w-md w-full shadow-2xl"
+                            className="relative bg-white rounded-[2.5rem] md:rounded-[40px] flex flex-col max-h-[90vh] overflow-hidden max-w-md w-full shadow-2xl"
                         >
-                            <h3 className="text-2xl font-black text-slate-900 mb-8">
-                                {editingSubject ? 'Update Subject' : 'Add New Subject'}
-                            </h3>
-                            <form onSubmit={handleSubmit} className="space-y-6">
-                                <div className="space-y-1">
-                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Subject Name</label>
-                                    <input
-                                        type="text" required className="input-field py-4" placeholder="e.g. Molecular Biology"
-                                        value={formData.name}
-                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    />
-                                </div>
-                                <div className="space-y-1">
-                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Assign to Course</label>
-                                    <select
-                                        className="input-field py-4"
-                                        value={formData.courseId}
-                                        onChange={(e) => setFormData({ ...formData, courseId: e.target.value })}
-                                        required
-                                    >
-                                        <option value="" disabled>Select Course</option>
-                                        {courses.map(c => (
-                                            <option key={c.id} value={c.id}>{c.title}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div className="flex gap-4 pt-4">
-                                    <button
-                                        type="button" onClick={closeModal}
-                                        className="flex-1 py-4 px-6 rounded-2xl border-2 border-slate-100 font-black uppercase tracking-widest text-xs text-slate-400"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        type="submit"
-                                        className="flex-1 py-4 px-6 rounded-2xl bg-primary-600 text-white font-black uppercase tracking-widest text-xs hover:shadow-lg shadow-primary-200 transition-all"
-                                    >
-                                        {editingSubject ? 'Update' : 'Create'}
-                                    </button>
-                                </div>
-                            </form>
+                            <div className="p-6 md:p-10 border-b border-slate-50 flex items-center justify-between shrink-0">
+                                <h3 className="text-xl md:text-2xl font-black text-slate-900">
+                                    {editingSubject ? 'Update Subject' : 'Add New Subject'}
+                                </h3>
+                                <button onClick={closeModal} className="p-2 md:p-3 hover:bg-slate-50 rounded-2xl transition-colors shrink-0">
+                                    <X size={24} className="text-slate-400" />
+                                </button>
+                            </div>
+
+                            <div className="flex-grow overflow-y-auto custom-scrollbar p-6 md:p-10">
+                                <form onSubmit={handleSubmit} className="space-y-6">
+                                    <div className="space-y-1">
+                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Subject Name</label>
+                                        <input
+                                            type="text" required className="input-field py-4" placeholder="e.g. Molecular Biology"
+                                            value={formData.name}
+                                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                        />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Assign to Course</label>
+                                        <select
+                                            className="input-field py-4 font-bold"
+                                            value={formData.courseId}
+                                            onChange={(e) => setFormData({ ...formData, courseId: e.target.value })}
+                                            required
+                                        >
+                                            <option value="" disabled>Select Course</option>
+                                            {courses.map(c => (
+                                                <option key={c.id} value={c.id}>{c.title}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div className="flex flex-col md:flex-row gap-4 pt-4">
+                                        <button
+                                            type="button" onClick={closeModal}
+                                            className="flex-1 py-4 px-6 rounded-2xl border-2 border-slate-100 font-black uppercase tracking-widest text-xs text-slate-400"
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            className="flex-1 py-4 px-6 rounded-2xl bg-primary-600 text-white font-black uppercase tracking-widest text-xs hover:shadow-lg shadow-primary-200 transition-all"
+                                        >
+                                            {editingSubject ? 'Update' : 'Create'}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </motion.div>
                     </div>
                 )}
