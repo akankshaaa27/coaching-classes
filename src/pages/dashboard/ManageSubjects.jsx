@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import {
     Book, Plus, Trash2, Edit2,
-    Layers, Search, AlertCircle
+    Layers, Search, AlertCircle, X
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 

@@ -3,20 +3,42 @@ import { useAppContext } from '../../context/AppContext';
 import {
     BookOpen, Plus, Search, Edit2,
     Trash2, Clock, IndianRupee, ChevronRight,
-    TrendingUp, Layers, CheckCircle
+    TrendingUp, Layers, CheckCircle, X
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ManageCourses = () => {
     const { courses, addCourse, updateCourse, deleteCourse } = useAppContext();
     const [showAddModal, setShowAddModal] = useState(false);
+    const [editingCourse, setEditingCourse] = useState(null);
     const [formData, setFormData] = useState({ title: '', description: '', duration: '', fees: '', type: 'Regular' });
+
+    const handleEdit = (course) => {
+        setEditingCourse(course);
+        setFormData({
+            title: course.title,
+            description: course.description,
+            duration: course.duration,
+            fees: course.fees,
+            type: course.type || 'Regular'
+        });
+        setShowAddModal(true);
+    };
+
+    const closeModal = () => {
+        setShowAddModal(false);
+        setEditingCourse(null);
+        setFormData({ title: '', description: '', duration: '', fees: '', type: 'Regular' });
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        addCourse(formData);
-        setFormData({ title: '', description: '', duration: '', fees: '', type: 'Regular' });
-        setShowAddModal(false);
+        if (editingCourse) {
+            updateCourse(editingCourse.id, formData);
+        } else {
+            addCourse(formData);
+        }
+        closeModal();
     };
 
     return (
@@ -81,7 +103,10 @@ const ManageCourses = () => {
                             </div>
 
                             <div className="flex items-center gap-4 pt-8 border-t border-slate-50">
-                                <button className="flex-1 bg-slate-50 text-slate-600 py-3 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-primary-50 hover:text-primary-600 transition-all">
+                                <button
+                                    onClick={() => handleEdit(course)}
+                                    className="flex-1 bg-slate-50 text-slate-600 py-3 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-primary-50 hover:text-primary-600 transition-all"
+                                >
                                     <Edit2 size={16} />
                                     Edit
                                 </button>
@@ -136,8 +161,10 @@ const ManageCourses = () => {
                             className="relative bg-white rounded-[2.5rem] md:rounded-[50px] w-full max-w-xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden"
                         >
                             <div className="p-6 md:p-10 border-b border-slate-50 flex items-center justify-between shrink-0">
-                                <h3 className="text-xl md:text-2xl font-black text-slate-900">Launch New Program</h3>
-                                <button onClick={() => setShowAddModal(false)} className="p-2 md:p-3 hover:bg-slate-50 rounded-2xl transition-colors shrink-0">
+                                <h3 className="text-xl md:text-2xl font-black text-slate-900">
+                                    {editingCourse ? 'Update Program Details' : 'Launch New Program'}
+                                </h3>
+                                <button onClick={closeModal} className="p-2 md:p-3 hover:bg-slate-50 rounded-2xl transition-colors shrink-0">
                                     <X size={24} className="text-slate-400" />
                                 </button>
                             </div>
@@ -193,7 +220,7 @@ const ManageCourses = () => {
 
                                     <div className="flex flex-col md:flex-row gap-4 pt-4">
                                         <button
-                                            type="button" onClick={() => setShowAddModal(false)}
+                                            type="button" onClick={closeModal}
                                             className="flex-1 py-4 px-6 rounded-2xl border-2 border-slate-100 font-black uppercase tracking-widest text-[10px] md:text-xs text-slate-400"
                                         >
                                             Discard
@@ -202,7 +229,7 @@ const ManageCourses = () => {
                                             type="submit"
                                             className="flex-1 py-4 px-6 rounded-2xl bg-slate-900 text-white font-black uppercase tracking-widest text-[10px] md:text-xs hover:bg-primary-600 transition-all shadow-xl shadow-slate-100"
                                         >
-                                            Launch Program
+                                            {editingCourse ? 'Save Changes' : 'Launch Program'}
                                         </button>
                                     </div>
                                 </form>
