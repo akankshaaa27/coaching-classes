@@ -1,0 +1,52 @@
+[
+    {
+        "id": "s1",
+        "name": "Biology",
+        "courseId": "1"
+    },
+    {
+        "id": "s2",
+        "name": "Physics",
+        "courseId": "1"
+    },
+    {
+        "id": "s3",
+        "name": "Chemistry",
+        "courseId": "1"
+    },
+    {
+        "id": "s4",
+        "name": "Mathematics",
+        "courseId": "2"
+    },
+    {
+        "id": "s5",
+        "name": "Physics",
+        "courseId": "2"
+    },
+    {
+        "id": "s6",
+        "name": "Chemistry",
+        "courseId": "2"
+    },
+    {
+        "id": "s7",
+        "name": "Biology",
+        "courseId": "3"
+    },
+    {
+        "id": "s8",
+        "name": "Physics",
+        "courseId": "3"
+    },
+    {
+        "id": "s9",
+        "name": "Chemistry",
+        "courseId": "3"
+    },
+    {
+        "id": "s10",
+        "name": "Mathematics",
+        "courseId": "3"
+    }
+]

@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useAppContext } from '../../../context/AppContext';
 import {
     ClipboardList, Plus, Search, Trash2,
-    HelpCircle, CheckCircle, BookOpen, Layers
+    HelpCircle, CheckCircle, BookOpen, Layers,
+    Upload, Download, FileSpreadsheet, X, AlertCircle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import * as XLSX from 'xlsx';
 
 const TeacherQuestions = () => {
     const { questionBank, courses, addQuestion } = useAppContext();
     const [showAddModal, setShowAddModal] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
+    const [uploadError, setUploadError] = useState('');
+    const fileInputRef = useRef(null);
     const [formData, setFormData] = useState({
         courseId: '', topic: '',
         question: '', options: ['', '', '', ''],
@@ -28,6 +33,83 @@ const TeacherQuestions = () => {
         setFormData({ courseId: '', topic: '', question: '', options: ['', '', '', ''], correctAnswer: '' });
     };
 
+    const handleBulkUpload = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        setIsUploading(true);
+        setUploadError('');
+
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+            try {
+                const bstr = evt.target.result;
+                const wb = XLSX.read(bstr, { type: 'binary' });
+                const wsname = wb.SheetNames[0];
+                const ws = wb.Sheets[wsname];
+                const data = XLSX.utils.sheet_to_json(ws);
+
+                if (data.length === 0) {
+                    setUploadError('The file appears to be empty.');
+                    setIsUploading(false);
+                    return;
+                }
+
+                // Process data grouped by Course and Topic
+                const groupedData = {};
+                data.forEach(item => {
+                    const cId = item.CourseID || item.courseId;
+                    const topic = item.Topic || item.topic;
+                    const question = item.Question || item.question;
+                    const optA = item.OptionA || item.optionA;
+                    const optB = item.OptionB || item.optionB;
+                    const optC = item.OptionC || item.optionC;
+                    const optD = item.OptionD || item.optionD;
+                    const correct = item.CorrectAnswer || item.correct;
+
+                    if (cId && topic && question && optA && optB && optC && optD && correct) {
+                        const key = `${cId}|${topic}`;
+                        if (!groupedData[key]) groupedData[key] = [];
+                        groupedData[key].push({
+                            id: Math.random().toString(36).substr(2, 9),
+                            question,
+                            options: [optA, optB, optC, optD],
+                            correctAnswer: correct
+                        });
+                    }
+                });
+
+                Object.keys(groupedData).forEach(key => {
+                    const [courseId, topic] = key.split('|');
+                    addQuestion(courseId, topic, groupedData[key]);
+                });
+
+                alert(`Bulk upload successful! Processed ${data.length} questions.`);
+                setIsUploading(false);
+            } catch (err) {
+                setUploadError('Failed to parse questions file.');
+                setIsUploading(false);
+            }
+        };
+        reader.readAsBinaryString(file);
+    };
+
+    const downloadTemplate = () => {
+        const templateData = [
+            {
+                CourseID: courses[0]?.id || '1',
+                Topic: 'Physics - Mechanics',
+                Question: 'What is the SI unit of force?',
+                OptionA: 'Newton', OptionB: 'Joule', OptionC: 'Watt', OptionD: 'Pascal',
+                CorrectAnswer: 'Newton'
+            }
+        ];
+        const ws = XLSX.utils.json_to_sheet(templateData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Questions Template");
+        XLSX.writeFile(wb, "question_bank_template.xlsx");
+    };
+
     const updateOption = (idx, val) => {
         const newOptions = [...formData.options];
         newOptions[idx] = val;
@@ -41,14 +123,45 @@ const TeacherQuestions = () => {
                     <h2 className="text-4xl font-black text-slate-900 tracking-tight">Question Intelligence</h2>
                     <p className="text-slate-500 font-medium text-lg">Build and categorize your question bank for various assessments.</p>
                 </div>
-                <button
-                    onClick={() => setShowAddModal(true)}
-                    className="btn-primary py-4 px-8 flex items-center justify-center space-x-3 shadow-xl shadow-primary-200"
-                >
-                    <Plus size={24} />
-                    <span className="text-lg font-black uppercase tracking-widest text-sm">Add Question</span>
-                </button>
+                <div className="flex items-center space-x-3">
+                    <button
+                        onClick={downloadTemplate}
+                        className="bg-slate-100 text-slate-600 py-3 px-5 rounded-xl font-bold text-sm flex items-center space-x-2 hover:bg-slate-200 transition-colors"
+                        title="Download Template"
+                    >
+                        <Download size={18} />
+                    </button>
+                    <button
+                        onClick={() => fileInputRef.current.click()}
+                        className="bg-secondary-50 text-secondary-600 py-3 px-6 rounded-xl font-bold text-sm flex items-center space-x-2 hover:bg-secondary-100 transition-colors"
+                        disabled={isUploading}
+                    >
+                        <Upload size={20} />
+                        <span>{isUploading ? 'Processing...' : 'Bulk Upload'}</span>
+                    </button>
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleBulkUpload}
+                        className="hidden"
+                        accept=".xlsx, .xls, .csv"
+                    />
+                    <button
+                        onClick={() => setShowAddModal(true)}
+                        className="btn-primary py-4 px-8 flex items-center justify-center space-x-3 shadow-xl shadow-primary-200"
+                    >
+                        <Plus size={24} />
+                        <span className="text-lg font-black uppercase tracking-widest text-sm">Add Question</span>
+                    </button>
+                </div>
             </div>
+
+            {uploadError && (
+                <div className="bg-red-50 border border-red-100 text-red-600 p-4 rounded-2xl flex items-center space-x-3">
+                    <AlertCircle size={20} />
+                    <span className="text-sm font-bold">{uploadError}</span>
+                </div>
+            )}
 
             <div className="space-y-12">
                 {questionBank.map((group, i) => {

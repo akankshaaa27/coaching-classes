@@ -27,7 +27,7 @@ import MockTests from './pages/dashboard/student/MockTests';
 import MockTestPlayer from './pages/dashboard/student/MockTestPlayer';
 import StudentResults from './pages/dashboard/student/StudentResults';
 import StudentMaterials from './pages/dashboard/student/StudentMaterials';
-import StudentProfile from './pages/dashboard/student/StudentProfile';
+import UserProfile from './pages/dashboard/UserProfile';
 
 // Teacher Pages
 import TeacherMaterials from './pages/dashboard/teacher/TeacherMaterials';
@@ -37,17 +37,21 @@ import TeacherStudentResults from './pages/dashboard/teacher/TeacherStudentResul
 
 // Admin Pages
 import AdminDashboard from './pages/dashboard/admin/AdminDashboard';
-import AdminUsers from './pages/dashboard/admin/AdminUsers';
-import AdminCourses from './pages/dashboard/admin/AdminCourses';
+import ManageStudents from './pages/dashboard/ManageStudents';
+import ManageTeachers from './pages/dashboard/ManageTeachers';
+import ManageCourses from './pages/dashboard/ManageCourses';
+import ManageSubjects from './pages/dashboard/ManageSubjects';
+import ManageSyllabus from './pages/dashboard/ManageSyllabus';
+import AcademyDirectory from './pages/dashboard/AcademyDirectory';
 
-const PrivateRoute = ({ children, role }) => {
+const PrivateRoute = ({ children, roles }) => {
     const { currentUser } = useAppContext();
 
     if (!currentUser) {
         return <Navigate to="/login" />;
     }
 
-    if (role && currentUser.role !== role) {
+    if (roles && !roles.includes(currentUser.role)) {
         return <Navigate to="/dashboard" />;
     }
 
@@ -85,18 +89,25 @@ function App() {
                 <Route path="student/mock-test/:id" element={<MockTestPlayer />} />
                 <Route path="student/results" element={<StudentResults />} />
                 <Route path="student/materials" element={<StudentMaterials />} />
-                <Route path="student/profile" element={<StudentProfile />} />
+                <Route path="student/profile" element={<UserProfile />} />
 
                 {/* Teacher Routes */}
-                <Route path="teacher/materials" element={<PrivateRoute role="teacher"><TeacherMaterials /></PrivateRoute>} />
-                <Route path="teacher/questions" element={<PrivateRoute role="teacher"><TeacherQuestions /></PrivateRoute>} />
-                <Route path="teacher/mock-tests" element={<PrivateRoute role="teacher"><TeacherMockTests /></PrivateRoute>} />
-                <Route path="teacher/results" element={<PrivateRoute role="teacher"><TeacherStudentResults /></PrivateRoute>} />
+                <Route path="teacher/materials" element={<PrivateRoute roles={['teacher']}><TeacherMaterials /></PrivateRoute>} />
+                <Route path="teacher/questions" element={<PrivateRoute roles={['teacher']}><TeacherQuestions /></PrivateRoute>} />
+                <Route path="teacher/mock-tests" element={<PrivateRoute roles={['teacher']}><TeacherMockTests /></PrivateRoute>} />
+                <Route path="teacher/results" element={<PrivateRoute roles={['teacher']}><TeacherStudentResults /></PrivateRoute>} />
+                <Route path="teacher/profile" element={<UserProfile />} />
 
                 {/* Admin Routes */}
-                <Route path="admin" element={<PrivateRoute role="admin"><AdminDashboard /></PrivateRoute>} />
-                <Route path="admin/users" element={<PrivateRoute role="admin"><AdminUsers /></PrivateRoute>} />
-                <Route path="admin/courses" element={<PrivateRoute role="admin"><AdminCourses /></PrivateRoute>} />
+                <Route path="admin" element={<PrivateRoute roles={['admin']}><AdminDashboard /></PrivateRoute>} />
+                <Route path="admin/students" element={<PrivateRoute roles={['admin', 'teacher']}><ManageStudents /></PrivateRoute>} />
+                <Route path="admin/teachers" element={<PrivateRoute roles={['admin']}><ManageTeachers /></PrivateRoute>} />
+                <Route path="admin/courses" element={<PrivateRoute roles={['admin']}><ManageCourses /></PrivateRoute>} />
+                <Route path="admin/subjects" element={<PrivateRoute roles={['admin']}><ManageSubjects /></PrivateRoute>} />
+                <Route path="admin/syllabus" element={<PrivateRoute roles={['admin']}><ManageSyllabus /></PrivateRoute>} />
+                <Route path="admin/directory" element={<PrivateRoute roles={['admin']}><AcademyDirectory /></PrivateRoute>} />
+                <Route path="admin/profile" element={<UserProfile />} />
+                <Route path="teacher/syllabus" element={<PrivateRoute roles={['teacher']}><ManageSyllabus /></PrivateRoute>} />
             </Route>
 
             <Route path="*" element={<Navigate to="/" />} />

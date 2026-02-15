@@ -4,29 +4,11 @@ import { Book, CheckCircle2, ChevronRight, Download, Search, Layout } from 'luci
 import { useAppContext } from '../context/AppContext';
 
 const Syllabus = () => {
-    const { courses } = useAppContext();
+    const { courses, syllabus } = useAppContext();
     const [selectedCourse, setSelectedCourse] = useState(courses[0]?.id);
 
     const activeCourse = courses.find(c => c.id === selectedCourse);
-
-    // Mock syllabus data
-    const syllabusContent = {
-        'Physics': [
-            { module: 'Module 1: Mechanics', topics: ['Newton\'s Laws of Motion', 'Universal Gravitation', 'Rotational Dynamics'] },
-            { module: 'Module 2: Electrodynamics', topics: ['Coulomb\'s Law', 'Electric Field and Potential', 'Capacitance & Resistance'] },
-            { module: 'Module 3: Optics', topics: ['Reflection & Refraction', 'Wave Optics', 'Optical Instruments'] },
-        ],
-        'Chemistry': [
-            { module: 'Module 1: Physical Chemistry', topics: ['Atomic Structure', 'Chemical Equilibrium', 'Thermodynamics'] },
-            { module: 'Module 2: Organic Chemistry', topics: ['IUPAC Nomenclature', 'Hydrocarbons', 'Alcohols & Phenols'] },
-            { module: 'Module 3: Inorganic Chemistry', topics: ['Periodic Table', 'Chemical Bonding', 'p-Block Elements'] },
-        ],
-        'Mathematics': [
-            { module: 'Module 1: Algebra', topics: ['Complex Numbers', 'Quadratic Equations', 'Matrices & Determinants'] },
-            { module: 'Module 2: Calculus', topics: ['Limits and Continuity', 'Differentiation', 'Integration'] },
-            { module: 'Module 3: Geometry', topics: ['Straight Lines', 'Conic Sections', '3D Geometry'] },
-        ]
-    };
+    const activeSyllabus = syllabus.filter(s => s.courseId === selectedCourse);
 
     return (
         <div className="pt-32 pb-24 bg-slate-50 min-h-screen">
@@ -51,8 +33,8 @@ const Syllabus = () => {
                                         key={course.id}
                                         onClick={() => setSelectedCourse(course.id)}
                                         className={`w-full text-left p-5 rounded-3xl transition-all flex items-center justify-between group ${selectedCourse === course.id
-                                                ? 'bg-primary-600 text-white shadow-xl shadow-primary-200 scale-[1.02]'
-                                                : 'bg-slate-50 text-slate-600 hover:bg-white hover:shadow-md'
+                                            ? 'bg-primary-600 text-white shadow-xl shadow-primary-200 scale-[1.02]'
+                                            : 'bg-slate-50 text-slate-600 hover:bg-white hover:shadow-md'
                                             }`}
                                     >
                                         <div className="flex items-center space-x-4">
@@ -95,23 +77,39 @@ const Syllabus = () => {
                                     <p className="text-slate-500 font-medium mb-12">Detailed chapter-wise breakdown for the academic session.</p>
 
                                     <div className="space-y-12">
-                                        {(syllabusContent[activeCourse?.title.split(' ')[0]] || syllabusContent['Physics']).map((mod, idx) => (
-                                            <div key={idx} className="relative pl-10">
-                                                <div className="absolute left-0 top-0 w-1 h-full bg-slate-100 rounded-full">
-                                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4 h-4 bg-white border-4 border-primary-600 rounded-full"></div>
+                                        {activeSyllabus.map((sub, sIdx) => (
+                                            <div key={sIdx} className="space-y-10">
+                                                <div className="flex items-center space-x-4 border-b border-slate-100 pb-4">
+                                                    <div className="w-2 h-8 bg-secondary-500 rounded-full"></div>
+                                                    <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight">{sub.subject}</h3>
                                                 </div>
+                                                <div className="space-y-12">
+                                                    {sub.modules.map((mod, idx) => (
+                                                        <div key={idx} className="relative pl-10">
+                                                            <div className="absolute left-0 top-0 w-1 h-full bg-slate-100 rounded-full">
+                                                                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4 h-4 bg-white border-4 border-primary-600 rounded-full"></div>
+                                                            </div>
 
-                                                <h3 className="text-xl font-black text-slate-900 mb-6 uppercase tracking-tight">{mod.module}</h3>
-                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                    {mod.topics.map((topic, tIdx) => (
-                                                        <div key={tIdx} className="flex items-center space-x-3 p-4 bg-slate-50 rounded-2xl border border-slate-50 hover:border-primary-100 hover:bg-white transition-all group">
-                                                            <CheckCircle2 size={18} className="text-green-500 opacity-50 group-hover:opacity-100 transition-opacity" />
-                                                            <span className="font-bold text-slate-600 text-sm">{topic}</span>
+                                                            <h4 className="text-xl font-bold text-slate-800 mb-6">{mod.module}</h4>
+                                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                                {mod.topics.map((topic, tIdx) => (
+                                                                    <div key={tIdx} className="flex items-center space-x-3 p-4 bg-slate-50 rounded-2xl border border-slate-50 hover:border-primary-100 hover:bg-white transition-all group">
+                                                                        <CheckCircle2 size={18} className="text-green-500 opacity-50 group-hover:opacity-100 transition-opacity" />
+                                                                        <span className="font-bold text-slate-600 text-sm">{topic}</span>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
                                                         </div>
                                                     ))}
                                                 </div>
                                             </div>
                                         ))}
+                                        {activeSyllabus.length === 0 && (
+                                            <div className="text-center py-20 bg-slate-50 rounded-[40px]">
+                                                <Book size={48} className="mx-auto text-slate-200 mb-4" />
+                                                <p className="text-slate-400 font-bold">No syllabus data available for this program.</p>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </motion.div>

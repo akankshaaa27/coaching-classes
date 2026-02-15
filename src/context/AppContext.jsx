@@ -5,6 +5,8 @@ import materialsData from '../data/materials.json';
 import questionBankData from '../data/questionBank.json';
 import mockTestsData from '../data/mockTests.json';
 import resultsData from '../data/results.json';
+import syllabusData from '../data/syllabus.json';
+import subjectsData from '../data/subjects.json';
 
 const AppContext = createContext();
 
@@ -33,6 +35,12 @@ export const AppProvider = ({ children }) => {
     const [results, setResults] = useState(
         JSON.parse(localStorage.getItem('results')) || resultsData
     );
+    const [syllabus, setSyllabus] = useState(
+        JSON.parse(localStorage.getItem('syllabus')) || syllabusData
+    );
+    const [subjects, setSubjects] = useState(
+        JSON.parse(localStorage.getItem('subjects')) || subjectsData
+    );
 
     // Persistence Effects
     useEffect(() => {
@@ -60,6 +68,14 @@ export const AppProvider = ({ children }) => {
     }, [results]);
 
     useEffect(() => {
+        localStorage.setItem('syllabus', JSON.stringify(syllabus));
+    }, [syllabus]);
+
+    useEffect(() => {
+        localStorage.setItem('subjects', JSON.stringify(subjects));
+    }, [subjects]);
+
+    useEffect(() => {
         if (currentUser) {
             localStorage.setItem('user', JSON.stringify(currentUser));
         } else {
@@ -85,8 +101,9 @@ export const AppProvider = ({ children }) => {
         const newUser = {
             ...userData,
             id: Date.now().toString(),
-            role: 'student',
-            enrolledCourses: []
+            role: userData.role || 'student',
+            enrolledCourses: userData.enrolledCourses || [],
+            enrolledSubjects: userData.enrolledSubjects || []
         };
         setUsers([...users, newUser]);
         return newUser;
@@ -144,6 +161,36 @@ export const AppProvider = ({ children }) => {
         }
     };
 
+    const deleteUser = (userId) => {
+        setUsers(users.filter(u => u.id !== userId));
+    };
+
+    const addSyllabus = (data) => {
+        const newSyllabus = { ...data, id: Date.now().toString() };
+        setSyllabus([...syllabus, newSyllabus]);
+    };
+
+    const updateSyllabus = (id, data) => {
+        setSyllabus(syllabus.map(s => s.id === id ? { ...s, ...data } : s));
+    };
+
+    const deleteSyllabus = (id) => {
+        setSyllabus(syllabus.filter(s => s.id !== id));
+    };
+
+    const addSubject = (subject) => {
+        const newSubject = { ...subject, id: Date.now().toString() };
+        setSubjects([...subjects, newSubject]);
+    };
+
+    const updateSubject = (id, data) => {
+        setSubjects(subjects.map(s => s.id === id ? { ...s, ...data } : s));
+    };
+
+    const deleteSubject = (id) => {
+        setSubjects(subjects.filter(s => s.id !== id));
+    };
+
     return (
         <AppContext.Provider value={{
             currentUser,
@@ -153,6 +200,7 @@ export const AppProvider = ({ children }) => {
             questionBank,
             mockTests,
             results,
+            syllabus,
             login,
             logout,
             register,
@@ -164,7 +212,15 @@ export const AppProvider = ({ children }) => {
             addQuestion,
             addMockTest,
             saveResult,
-            updateProfile
+            updateProfile,
+            deleteUser,
+            addSyllabus,
+            updateSyllabus,
+            deleteSyllabus,
+            subjects,
+            addSubject,
+            updateSubject,
+            deleteSubject
         }}>
             {children}
         </AppContext.Provider>

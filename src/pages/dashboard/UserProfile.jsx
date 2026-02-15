@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { useAppContext } from '../../../context/AppContext';
+import { useAppContext } from '../../context/AppContext';
 import {
     User, Mail, Phone, Lock,
     MapPin, Camera, Save, ShieldCheck
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const StudentProfile = () => {
+const UserProfile = () => {
     const { currentUser, updateProfile } = useAppContext();
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({
@@ -182,4 +182,4 @@ const StudentProfile = () => {
     );
 };
 
-export default StudentProfile;
+export default UserProfile;

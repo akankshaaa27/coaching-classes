@@ -1,47 +1,165 @@
-import React, { useState } from 'react';
-import { useAppContext } from '../../../context/AppContext';
+import React, { useState, useRef } from 'react';
+import { useAppContext } from '../../context/AppContext';
 import {
     Users, UserPlus, Search, Filter,
-    Edit2, Trash2, Mail, Shield, CheckCircle, X
+    Edit2, Trash2, Mail, Shield, CheckCircle, X,
+    FileSpreadsheet, Upload, Download, AlertCircle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import * as XLSX from 'xlsx';
 
-const AdminUsers = () => {
-    const { users, register, updateProfile } = useAppContext();
+const ManageUsers = () => {
+    const { users, register, updateProfile, deleteUser, currentUser } = useAppContext();
     const [searchTerm, setSearchTerm] = useState('');
     const [roleFilter, setRoleFilter] = useState('all');
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingUser, setEditingUser] = useState(null);
     const [formData, setFormData] = useState({ name: '', email: '', role: 'student', password: 'password123' });
+    const [uploadError, setUploadError] = useState('');
+    const [isUploading, setIsUploading] = useState(false);
+    const fileInputRef = useRef(null);
 
     const filteredUsers = users.filter(user => {
         const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             user.email.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesRole = roleFilter === 'all' || user.role === roleFilter;
+
+        // Security: Teachers can only see students
+        if (currentUser.role === 'teacher' && user.role !== 'student') return false;
+
         return matchesSearch && matchesRole;
     });
 
-    const handleAddUser = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        register({ ...formData });
+        if (editingUser) {
+            updateProfile(editingUser.id, formData);
+        } else {
+            register({ ...formData });
+        }
         setIsModalOpen(false);
+        setEditingUser(null);
         setFormData({ name: '', email: '', role: 'student', password: 'password123' });
+    };
+
+    const handleEdit = (user) => {
+        setEditingUser(user);
+        setFormData({ name: user.name, email: user.email, role: user.role, password: user.password || 'password123' });
+        setIsModalOpen(true);
+    };
+
+    const handleDelete = (userId) => {
+        if (window.confirm('Are you sure you want to delete this user?')) {
+            deleteUser(userId);
+        }
+    };
+
+    const handleFileUpload = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        setIsUploading(true);
+        setUploadError('');
+
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+            try {
+                const bstr = evt.target.result;
+                const wb = XLSX.read(bstr, { type: 'binary' });
+                const wsname = wb.SheetNames[0];
+                const ws = wb.Sheets[wsname];
+                const data = XLSX.utils.sheet_to_json(ws);
+
+                if (data.length === 0) {
+                    setUploadError('The file appears to be empty.');
+                    setIsUploading(false);
+                    return;
+                }
+
+                // Expected columns: Name, Email, Role (optional), Password (optional)
+                data.forEach(item => {
+                    const name = item.Name || item.name || item.FullName;
+                    const email = item.Email || item.email;
+                    let role = item.Role || item.role || 'student';
+                    const password = item.Password || item.password || 'password123';
+
+                    // Security: Teachers can only import students
+                    if (currentUser.role === 'teacher') {
+                        role = 'student';
+                    }
+
+                    if (name && email) {
+                        register({ name, email, role, password });
+                    }
+                });
+
+                alert(`Successfully processed ${data.length} records!`);
+                setIsUploading(false);
+            } catch (err) {
+                setUploadError('Failed to parse file. Please use a valid Excel or CSV file.');
+                setIsUploading(false);
+            }
+        };
+        reader.readAsBinaryString(file);
+    };
+
+    const downloadTemplate = () => {
+        const templateData = [
+            { Name: 'John Doe', Email: 'john@example.com', Role: 'student', Password: 'password123' },
+            { Name: 'Jane Smith', Email: 'jane@example.com', Role: 'teacher', Password: 'password123' }
+        ];
+        const ws = XLSX.utils.json_to_sheet(templateData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Users Template");
+        XLSX.writeFile(wb, "user_import_template.xlsx");
     };
 
     return (
         <div className="space-y-8 animate-in fade-in duration-500">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
-                    <h2 className="text-3xl font-extrabold text-slate-900">User Management</h2>
-                    <p className="text-slate-500 font-medium">Manage students, teachers, and administrative access.</p>
+                    <h2 className="text-4xl font-black text-slate-900 tracking-tight">Manage <span className="text-primary-600">Students & Teachers</span></h2>
+                    <p className="text-slate-500 font-medium text-lg">Central directory for Academy staff, faculty members, and enrolled students.</p>
                 </div>
-                <button
-                    onClick={() => setIsModalOpen(true)}
-                    className="btn-primary py-3 px-6 flex items-center justify-center space-x-2"
-                >
-                    <UserPlus size={20} />
-                    <span>Add New User</span>
-                </button>
+                <div className="flex items-center space-x-3">
+                    <button
+                        onClick={downloadTemplate}
+                        className="bg-slate-100 text-slate-600 py-3 px-5 rounded-xl font-bold text-sm flex items-center space-x-2 hover:bg-slate-200 transition-colors"
+                        title="Download Import Template"
+                    >
+                        <Download size={18} />
+                    </button>
+                    <button
+                        onClick={() => fileInputRef.current.click()}
+                        className="bg-secondary-50 text-secondary-600 py-3 px-6 rounded-xl font-bold text-sm flex items-center space-x-2 hover:bg-secondary-100 transition-colors"
+                        disabled={isUploading}
+                    >
+                        <Upload size={20} />
+                        <span>{isUploading ? 'Uploading...' : 'Bulk Upload'}</span>
+                    </button>
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleFileUpload}
+                        className="hidden"
+                        accept=".xlsx, .xls, .csv"
+                    />
+                    <button
+                        onClick={() => setIsModalOpen(true)}
+                        className="btn-primary py-3 px-6 flex items-center justify-center space-x-2"
+                    >
+                        <UserPlus size={20} />
+                        <span>Add New User</span>
+                    </button>
+                </div>
             </div>
+
+            {uploadError && (
+                <div className="bg-red-50 border border-red-100 text-red-600 p-4 rounded-2xl flex items-center space-x-3">
+                    <AlertCircle size={20} />
+                    <span className="text-sm font-bold">{uploadError}</span>
+                </div>
+            )}
 
             {/* Filters */}
             <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col md:flex-row gap-4 items-center">
@@ -64,9 +182,14 @@ const AdminUsers = () => {
                             onChange={(e) => setRoleFilter(e.target.value)}
                         >
                             <option value="all">All Roles</option>
-                            <option value="student">Students</option>
-                            <option value="teacher">Teachers</option>
-                            <option value="admin">Admins</option>
+                            {currentUser.role === 'admin' && (
+                                <>
+                                    <option value="student">Students</option>
+                                    <option value="teacher">Teachers</option>
+                                    <option value="admin">Admins</option>
+                                </>
+                            )}
+                            {currentUser.role === 'teacher' && <option value="student">Students</option>}
                         </select>
                     </div>
                 </div>
@@ -124,10 +247,16 @@ const AdminUsers = () => {
                                         </td>
                                         <td className="px-6 py-5">
                                             <div className="flex items-center space-x-2">
-                                                <button className="p-2 text-slate-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all">
+                                                <button
+                                                    onClick={() => handleEdit(user)}
+                                                    className="p-2 text-slate-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all"
+                                                >
                                                     <Edit2 size={18} />
                                                 </button>
-                                                <button className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all">
+                                                <button
+                                                    onClick={() => handleDelete(user.id)}
+                                                    className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                                                >
                                                     <Trash2 size={18} />
                                                 </button>
                                             </div>
@@ -164,12 +293,14 @@ const AdminUsers = () => {
                             className="bg-white rounded-[40px] shadow-2xl w-full max-w-lg relative z-10 overflow-hidden"
                         >
                             <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                                <h3 className="text-2xl font-black text-slate-900">Add New User</h3>
-                                <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-white rounded-xl transition-colors">
+                                <h3 className="text-2xl font-black text-slate-900">
+                                    {editingUser ? 'Update Profile' : (currentUser.role === 'teacher' ? 'Add New Student' : 'Add New User')}
+                                </h3>
+                                <button onClick={() => { setIsModalOpen(false); setEditingUser(null); }} className="p-2 hover:bg-white rounded-xl transition-colors">
                                     <X size={20} className="text-slate-400" />
                                 </button>
                             </div>
-                            <form onSubmit={handleAddUser} className="p-8 space-y-6">
+                            <form onSubmit={handleSubmit} className="p-8 space-y-6">
                                 <div className="space-y-1">
                                     <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Full Name</label>
                                     <input
@@ -190,10 +321,15 @@ const AdminUsers = () => {
                                         <select
                                             className="input-field py-4 appearance-none"
                                             value={formData.role} onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                                            disabled={currentUser.role !== 'admin' || editingUser}
                                         >
                                             <option value="student">Student</option>
-                                            <option value="teacher">Teacher</option>
-                                            <option value="admin">Admin</option>
+                                            {currentUser.role === 'admin' && (
+                                                <>
+                                                    <option value="teacher">Teacher</option>
+                                                    <option value="admin">Admin</option>
+                                                </>
+                                            )}
                                         </select>
                                     </div>
                                     <div className="space-y-1">
@@ -205,7 +341,9 @@ const AdminUsers = () => {
                                     </div>
                                 </div>
                                 <div className="pt-4">
-                                    <button type="submit" className="btn-primary w-full py-5 text-sm font-black uppercase tracking-widest shadow-lg">Create Account</button>
+                                    <button type="submit" className="btn-primary w-full py-5 text-sm font-black uppercase tracking-widest shadow-lg">
+                                        {editingUser ? 'Save Changes' : (currentUser.role === 'teacher' ? 'Register Student' : 'Create Account')}
+                                    </button>
                                 </div>
                             </form>
                         </motion.div>
@@ -216,4 +354,4 @@ const AdminUsers = () => {
     );
 };
 
-export default AdminUsers;
+export default ManageUsers;

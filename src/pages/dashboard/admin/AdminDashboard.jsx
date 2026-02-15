@@ -2,6 +2,7 @@ import React from 'react';
 import { useAppContext } from '../../../context/AppContext';
 import { Users, BookOpen, GraduationCap, TrendingUp, UserCheck, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const StatCard = ({ icon, title, value, detail, color, delay }) => (
     <motion.div
@@ -24,6 +25,7 @@ const StatCard = ({ icon, title, value, detail, color, delay }) => (
 
 const AdminDashboard = () => {
     const { users, courses } = useAppContext();
+    const navigate = useNavigate();
 
     const stats = [
         { icon: <Users size={24} />, title: 'Total Students', value: users.filter(u => u.role === 'student').length, detail: '+12% this month', color: 'bg-primary-600', delay: 0.1 },
@@ -69,6 +71,30 @@ const AdminDashboard = () => {
                     </div>
                     {/* Decoration */}
                     <div className="absolute top-0 right-0 w-64 h-64 bg-secondary-500 opacity-20 blur-[100px] group-hover:opacity-30 transition-opacity"></div>
+                </div>
+            </div>
+
+            <div className="space-y-6">
+                <h4 className="text-xl font-black text-slate-900 ml-2 uppercase tracking-widest text-sm">Institutional Operations</h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    {[
+                        { label: 'Users', icon: <Users size={20} />, to: '/dashboard/admin/users', color: 'bg-indigo-50 text-indigo-600' },
+                        { label: 'Courses', icon: <BookOpen size={20} />, to: '/dashboard/admin/courses', color: 'bg-emerald-50 text-emerald-600' },
+                        { label: 'Syllabus', icon: <BookOpen size={20} />, to: '/dashboard/admin/syllabus', color: 'bg-amber-50 text-amber-600' },
+                        { label: 'Settings', icon: <Users size={20} />, to: '#', color: 'bg-slate-50 text-slate-600' }
+                    ].map((link, i) => (
+                        <motion.button
+                            key={i}
+                            whileHover={{ y: -5 }}
+                            onClick={() => link.to !== '#' && navigate(link.to)}
+                            className="bg-white p-6 rounded-3xl border border-slate-100 flex flex-col items-center justify-center space-y-3 hover:shadow-lg transition-all"
+                        >
+                            <div className={`w-12 h-12 ${link.color} rounded-2xl flex items-center justify-center`}>
+                                {link.icon}
+                            </div>
+                            <span className="font-bold text-slate-900">{link.label}</span>
+                        </motion.button>
+                    ))}
                 </div>
             </div>
         </div>

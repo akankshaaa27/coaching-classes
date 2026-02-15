@@ -3,7 +3,7 @@ import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
     Users, BookOpen, FileText, BarChart3, Settings,
     LogOut, Menu, X, Bell, User, GraduationCap,
-    LayoutDashboard, ClipboardList, Book
+    LayoutDashboard, ClipboardList, Book, Layers
 } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 
@@ -44,16 +44,24 @@ const DashboardLayout = () => {
         if (currentUser.role === 'admin') {
             return [
                 { to: '/dashboard/admin', icon: <LayoutDashboard size={20} />, label: 'Dashboard' },
-                { to: '/dashboard/admin/users', icon: <Users size={20} />, label: 'Manage Users' },
+                { to: '/dashboard/admin/students', icon: <Users size={20} />, label: 'Manage Students' },
+                { to: '/dashboard/admin/teachers', icon: <GraduationCap size={20} />, label: 'Manage Teachers' },
                 { to: '/dashboard/admin/courses', icon: <BookOpen size={20} />, label: 'Manage Courses' },
+                { to: '/dashboard/admin/subjects', icon: <Layers size={20} />, label: 'Manage Subjects' },
+                { to: '/dashboard/admin/syllabus', icon: <Book size={20} />, label: 'Manage Syllabus' },
+                { to: '/dashboard/admin/directory', icon: <BarChart3 size={20} />, label: 'Academy Insights' },
+                { to: '/dashboard/admin/profile', icon: <User size={20} />, label: 'My Profile' },
             ];
         } else if (currentUser.role === 'teacher') {
             return [
                 { to: '/dashboard', icon: <LayoutDashboard size={20} />, label: 'Overview' },
+                { to: '/dashboard/admin/students', icon: <Users size={20} />, label: 'My Students' },
                 { to: '/dashboard/teacher/materials', icon: <Book size={20} />, label: 'Study Materials' },
+                { to: '/dashboard/teacher/syllabus', icon: <BookOpen size={20} />, label: 'Curriculum' },
                 { to: '/dashboard/teacher/questions', icon: <ClipboardList size={20} />, label: 'Question Bank' },
                 { to: '/dashboard/teacher/mock-tests', icon: <FileText size={20} />, label: 'Mock Tests' },
                 { to: '/dashboard/teacher/results', icon: <BarChart3 size={20} />, label: 'Student Results' },
+                { to: '/dashboard/teacher/profile', icon: <User size={20} />, label: 'My Profile' },
             ];
         } else {
             return [

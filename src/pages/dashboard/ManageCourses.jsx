@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useAppContext } from '../../../context/AppContext';
+import { useAppContext } from '../../context/AppContext';
 import {
     BookOpen, Plus, Search, Edit2,
     Trash2, Clock, IndianRupee, ChevronRight,
@@ -7,15 +7,15 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const AdminCourses = () => {
+const ManageCourses = () => {
     const { courses, addCourse, updateCourse, deleteCourse } = useAppContext();
     const [showAddModal, setShowAddModal] = useState(false);
-    const [formData, setFormData] = useState({ title: '', description: '', duration: '', fees: '' });
+    const [formData, setFormData] = useState({ title: '', description: '', duration: '', fees: '', type: 'Regular' });
 
     const handleSubmit = (e) => {
         e.preventDefault();
         addCourse(formData);
-        setFormData({ title: '', description: '', duration: '', fees: '' });
+        setFormData({ title: '', description: '', duration: '', fees: '', type: 'Regular' });
         setShowAddModal(false);
     };
 
@@ -56,7 +56,14 @@ const AdminCourses = () => {
                                 {course.description}
                             </p>
 
-                            <div className="grid grid-cols-2 gap-6 mb-10">
+                            <div className="grid grid-cols-2 gap-4 mb-10">
+                                <div className="space-y-1">
+                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Type</span>
+                                    <div className="flex items-center space-x-2 text-slate-900 font-bold">
+                                        <Layers size={16} className="text-secondary-500" />
+                                        <span>{course.type || 'Regular'}</span>
+                                    </div>
+                                </div>
                                 <div className="space-y-1">
                                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Duration</span>
                                     <div className="flex items-center space-x-2 text-slate-900 font-bold">
@@ -167,6 +174,18 @@ const AdminCourses = () => {
                                     </div>
                                 </div>
 
+                                <div className="space-y-2">
+                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Type</label>
+                                    <select
+                                        className="input-field py-4"
+                                        value={formData.type}
+                                        onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                                    >
+                                        <option value="Regular">Regular</option>
+                                        <option value="Crash">Crash</option>
+                                    </select>
+                                </div>
+
                                 <div className="flex gap-4 pt-4">
                                     <button
                                         type="button" onClick={() => setShowAddModal(false)}
@@ -190,4 +209,4 @@ const AdminCourses = () => {
     );
 };
 
-export default AdminCourses;
+export default ManageCourses;

@@ -37,6 +37,14 @@ const DashboardHero = () => {
         { label: 'Tests Conducted', value: results.length, icon: <FileText size={24} />, color: 'bg-green-600' }
     ];
 
+    // Teacher Stats
+    const teacherStats = [
+        { label: 'My Students', value: users.filter(u => u.role === 'student' && (currentUser.enrolledCourses || []).includes(u.courseId)).length, icon: <Users size={24} />, color: 'bg-blue-600' },
+        { label: 'Assigned Courses', value: (currentUser.enrolledCourses || []).length, icon: <BookOpen size={24} />, color: 'bg-purple-600' },
+        { label: 'Expertise Areas', value: (currentUser.enrolledSubjects || []).length, icon: <CheckCircle size={24} />, color: 'bg-green-600' },
+        { label: 'Recent Results', value: results.length, icon: <TrendingUp size={24} />, color: 'bg-orange-600' }
+    ];
+
     // Student Stats
     const studentResults = results.filter(r => r.studentId === currentUser.id);
     const avgScore = studentResults.length > 0
@@ -44,13 +52,15 @@ const DashboardHero = () => {
         : 0;
 
     const studentStats = [
-        { label: 'Enrolled Courses', value: currentUser?.enrolledCourses?.length || 0, icon: <BookOpen size={24} />, color: 'bg-blue-600' },
+        { label: 'Enrolled Courses', value: (currentUser.enrolledCourses || []).length, icon: <BookOpen size={24} />, color: 'bg-blue-600' },
         { label: 'Tests Taken', value: studentResults.length, icon: <FileText size={24} />, color: 'bg-purple-600' },
         { label: 'Average Score', value: `${avgScore}%`, icon: <TrendingUp size={24} />, color: 'bg-green-600' },
         { label: 'Recent Rank', value: '#12', icon: <CheckCircle size={24} />, color: 'bg-orange-600' }
     ];
 
-    const stats = currentUser.role === 'admin' ? adminStats : studentStats;
+    const stats = currentUser.role === 'admin'
+        ? adminStats
+        : (currentUser.role === 'teacher' ? teacherStats : studentStats);
 
     const data = [
         { name: 'Mon', score: 65 },

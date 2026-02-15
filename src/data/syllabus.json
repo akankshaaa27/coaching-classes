@@ -1,0 +1,64 @@
+[
+    {
+        "id": "1",
+        "courseId": "1",
+        "subject": "Physics",
+        "modules": [
+            {
+                "module": "Module 1: Mechanics",
+                "topics": [
+                    "Newton's Laws of Motion",
+                    "Universal Gravitation",
+                    "Rotational Dynamics"
+                ]
+            },
+            {
+                "module": "Module 2: Electrodynamics",
+                "topics": [
+                    "Coulomb's Law",
+                    "Electric Field and Potential",
+                    "Capacitance & Resistance"
+                ]
+            },
+            {
+                "module": "Module 3: Optics",
+                "topics": [
+                    "Reflection & Refraction",
+                    "Wave Optics",
+                    "Optical Instruments"
+                ]
+            }
+        ]
+    },
+    {
+        "id": "2",
+        "courseId": "2",
+        "subject": "Chemistry",
+        "modules": [
+            {
+                "module": "Module 1: Physical Chemistry",
+                "topics": [
+                    "Atomic Structure",
+                    "Chemical Equilibrium",
+                    "Thermodynamics"
+                ]
+            },
+            {
+                "module": "Module 2: Organic Chemistry",
+                "topics": [
+                    "IUPAC Nomenclature",
+                    "Hydrocarbons",
+                    "Alcohols & Phenols"
+                ]
+            },
+            {
+                "module": "Module 3: Inorganic Chemistry",
+                "topics": [
+                    "Periodic Table",
+                    "Chemical Bonding",
+                    "p-Block Elements"
+                ]
+            }
+        ]
+    }
+]
