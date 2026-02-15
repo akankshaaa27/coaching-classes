@@ -12,34 +12,48 @@ const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
     // Authentication State
+    // Helper to safely get data from localStorage
+    const safeGetItem = (key, defaultValue) => {
+        try {
+            const item = localStorage.getItem(key);
+            return item ? JSON.parse(item) : defaultValue;
+        } catch (error) {
+            console.error(`Error parsing localStorage key "${key}":`, error);
+            // If corruption is found, optional: clear that specific key
+            localStorage.removeItem(key);
+            return defaultValue;
+        }
+    };
+
+    // Authentication State
     const [currentUser, setCurrentUser] = useState(
-        JSON.parse(localStorage.getItem('user')) || null
+        safeGetItem('user', null)
     );
 
     // Data Store States (Simulated Database)
     const [users, setUsers] = useState(
-        JSON.parse(localStorage.getItem('users')) || usersData
+        safeGetItem('users', usersData)
     );
     const [courses, setCourses] = useState(
-        JSON.parse(localStorage.getItem('courses')) || coursesData
+        safeGetItem('courses', coursesData)
     );
     const [materials, setMaterials] = useState(
-        JSON.parse(localStorage.getItem('materials')) || materialsData
+        safeGetItem('materials', materialsData)
     );
     const [questionBank, setQuestionBank] = useState(
-        JSON.parse(localStorage.getItem('questionBank')) || questionBankData
+        safeGetItem('questionBank', questionBankData)
     );
     const [mockTests, setMockTests] = useState(
-        JSON.parse(localStorage.getItem('mockTests')) || mockTestsData
+        safeGetItem('mockTests', mockTestsData)
     );
     const [results, setResults] = useState(
-        JSON.parse(localStorage.getItem('results')) || resultsData
+        safeGetItem('results', resultsData)
     );
     const [syllabus, setSyllabus] = useState(
-        JSON.parse(localStorage.getItem('syllabus')) || syllabusData
+        safeGetItem('syllabus', syllabusData)
     );
     const [subjects, setSubjects] = useState(
-        JSON.parse(localStorage.getItem('subjects')) || subjectsData
+        safeGetItem('subjects', subjectsData)
     );
 
     // Persistence Effects

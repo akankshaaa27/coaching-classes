@@ -27,6 +27,7 @@ import MockTests from './pages/dashboard/student/MockTests';
 import MockTestPlayer from './pages/dashboard/student/MockTestPlayer';
 import StudentResults from './pages/dashboard/student/StudentResults';
 import StudentMaterials from './pages/dashboard/student/StudentMaterials';
+import StudentSyllabus from './pages/dashboard/student/StudentSyllabus';
 import UserProfile from './pages/dashboard/UserProfile';
 
 // Teacher Pages
@@ -89,6 +90,7 @@ function App() {
                 <Route path="student/mock-test/:id" element={<MockTestPlayer />} />
                 <Route path="student/results" element={<StudentResults />} />
                 <Route path="student/materials" element={<StudentMaterials />} />
+                <Route path="student/syllabus" element={<StudentSyllabus />} />
                 <Route path="student/profile" element={<UserProfile />} />
 
                 {/* Teacher Routes */}

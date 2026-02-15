@@ -68,6 +68,7 @@ const DashboardLayout = () => {
                 { to: '/dashboard', icon: <LayoutDashboard size={20} />, label: 'Overview' },
                 { to: '/dashboard/student/courses', icon: <BookOpen size={20} />, label: 'Enrolled Courses' },
                 { to: '/dashboard/student/materials', icon: <Book size={20} />, label: 'Study Materials' },
+                { to: '/dashboard/student/syllabus', icon: <Layers size={20} />, label: 'Learning Roadmap' },
                 { to: '/dashboard/student/mock-tests', icon: <FileText size={20} />, label: 'Mock Tests' },
                 { to: '/dashboard/student/results', icon: <BarChart3 size={20} />, label: 'My Results' },
                 { to: '/dashboard/student/profile', icon: <User size={20} />, label: 'My Profile' },
